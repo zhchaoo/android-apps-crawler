@@ -26,8 +26,8 @@ class SQLitePipeline(object):
 
     def process_item(self, item, spider):
         try:
-            self.conn.execute('insert into apps(url) values(?)',
-                        (item['url'],)
+            self.conn.execute('insert into apps(url, app_name, version) values(?, ?, ?)',
+                        (item['url'], item['app_name'], item['version'])
                     )
             self.conn.commit()
             log.msg("Inserting into database");
@@ -54,6 +54,8 @@ class SQLitePipeline(object):
         self.conn.execute("create table apps( \
                 id integer primary key autoincrement, \
                 url varchar(100) not null unique, \
+                app_name varchar(20), \
+                version varchar(10), \
                 downloaded int default 0)"
             )
         self.conn.commit()
